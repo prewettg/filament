@@ -20,11 +20,15 @@
 
 #include "details/Engine.h"
 
+#include <filament/Exposure.h>
+#include <filament/Camera.h>
+
 #include <utils/compiler.h>
 #include <utils/Panic.h>
 
 #include <math/scalar.h>
-#include <filament/Exposure.h>
+
+#include <math/vec2.h>
 
 using namespace filament::math;
 using namespace utils;
@@ -156,8 +160,16 @@ void UTILS_NOINLINE FCamera::setProjection(Camera::Projection projection,
     mFar = float(far);
 }
 
-void FCamera::setScaling(math::double4 const& scaling) noexcept {
-    mScaling = scaling;
+math::mat4 FCamera::getProjectionMatrix() const noexcept {
+    auto s = math::mat4(mScaling);
+    auto t = math::mat4::translation(math::double3(mShift * 2.0, 0.0));
+    return (s * t) * mProjection;
+}
+
+math::mat4 FCamera::getCullingProjectionMatrix() const noexcept {
+    auto s = math::mat4(mScaling);
+    auto t = math::mat4::translation(double3{ mShift * 2.0, 0.0 });
+    return (s * t) * mProjectionForCulling;
 }
 
 void UTILS_NOINLINE FCamera::setModelMatrix(const mat4f& modelMatrix) noexcept {
@@ -298,6 +310,10 @@ void Camera::setCustomProjection(mat4 const& projection, double near, double far
 
 void Camera::setScaling(math::double4 const& scaling) noexcept {
     upcast(this)->setScaling(scaling);
+}
+
+void Camera::setShift(math::double2 shift) noexcept {
+    upcast(this)->setShift(shift);
 }
 
 mat4 Camera::getProjectionMatrix() const noexcept {

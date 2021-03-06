@@ -772,11 +772,11 @@ void FilamentApp::Window::configureCamerasForWindow() {
 
     // To trigger a floating-point exception, users could shrink the window to be smaller than
     // the sidebar. To prevent this we simply clamp the width of the main viewport.
-    const uint32_t mainWidth = std::max(1, (int) width - sidebar);
+    //const uint32_t mainWidth = std::max(1, (int) width - sidebar);
 
     double near = 0.1;
     double far = 100;
-    mMainCamera->setLensProjection(mFilamentApp->mCameraFocalLength, double(mainWidth) / height, near, far);
+    mMainCamera->setLensProjection(mFilamentApp->mCameraFocalLength, double(width) / height, near, far);
     mDebugCamera->setProjection(45.0, double(width) / height, 0.0625, 4096, Camera::Fov::VERTICAL);
     mOrthoCamera->setProjection(Camera::Projection::ORTHO, -3, 3, -3 * ratio, 3 * ratio, near, far);
     mOrthoCamera->lookAt({ 0, 0, 0 }, {0, 0, -4});
@@ -794,7 +794,9 @@ void FilamentApp::Window::configureCamerasForWindow() {
         mGodView->setViewport  ({ int32_t(vpw), int32_t(vph), width - vpw, height - vph });
         mOrthoView->setViewport({            0, int32_t(vph), vpw,         height - vph });
     } else {
-        mMainView->setViewport({ sidebar, 0, mainWidth, height });
+        mMainView->setViewport({ 0, 0, width, height });
+        // we multiply the shift by 0.5 to keep the object centered
+        mMainCamera->setShift({(double)sidebar*0.5/width, 0.0 });
     }
     mUiView->setViewport({ 0, 0, width, height });
 }

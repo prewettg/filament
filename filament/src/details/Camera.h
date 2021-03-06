@@ -60,22 +60,21 @@ public:
     // Sets a custom projection matrix (sets both the viewing and culling projections).
     void setCustomProjection(math::mat4 const& projection, double near, double far) noexcept;
 
-    void setScaling(math::double4 const& scaling) noexcept;
+    void setScaling(math::double4 const& scaling) noexcept { mScaling = scaling; }
+
+    const math::double4& getScaling() const noexcept { return mScaling; }
+
+    void setShift(math::double2 shift) noexcept { mShift = shift; }
+
+    const math::double2 getShift() const noexcept { return mShift; }
 
     // returns the projection matrix
-    math::mat4 getProjectionMatrix() const noexcept {
-        return math::mat4(mScaling) * mProjection;
-    }
+    math::mat4 getProjectionMatrix() const noexcept;
 
-    math::mat4 getCullingProjectionMatrix() const noexcept {
-        return math::mat4(mScaling) * mProjectionForCulling;
-    }
-
-    const math::double4& getScaling() const noexcept {
-        return mScaling;
-    }
+    math::mat4 getCullingProjectionMatrix() const noexcept;
 
     float getNear() const noexcept { return mNear; }
+
     float getCullingFar() const noexcept { return mFar; }
 
     // sets the camera's view matrix (must be a rigid transform)
@@ -165,9 +164,10 @@ private:
     FEngine& mEngine;
     utils::Entity mEntity;
 
-    math::mat4 mProjection;            // projection matrix (infinite far)
-    math::mat4 mProjectionForCulling;  // projection matrix (with far plane)
-    math::double4 mScaling = {1.0f};   // additional scaling applied to projection
+    math::mat4 mProjection;                // projection matrix (infinite far)
+    math::mat4 mProjectionForCulling;      // projection matrix (with far plane)
+    math::double4 mScaling = { 1.0f };  // additional scaling applied to projection
+    math::double2 mShift = { 0.0f };    // additional translation applied to projection
 
     float mNear{};
     float mFar{};

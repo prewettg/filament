@@ -227,6 +227,18 @@ public:
      */
     void setScaling(math::double4 const& scaling) noexcept;
 
+    /**
+     * Sets an additional matrix that shifts the projection matrix.
+     * By default, this is an identity matrix.
+     *
+     * @param shift     x and y translation added to the projection matrix, specified in NDC
+     *                  coordinates, that is, if the translation must be specified in pixels,
+     *                  shift must be scaled by 1.0 / { viewport.width, viewport.height }.
+     *
+     * @see setProjection, setLensProjection, setCustomProjection
+     */
+    void setShift(math::double2 shift) noexcept;
+
     /** Returns the projection matrix used for rendering.
      *
      * The projection matrix used for rendering always has its far plane set to infinity. This
